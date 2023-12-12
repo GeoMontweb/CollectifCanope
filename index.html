@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Priorisation des sites de plantation pour le verdissement</title>
+    </head>
+    <body>
+        <div id="map" style="z-index:1;">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="data/Indicededfavorisation_2.js"></script>
+        <script src="data/lotsdechaleur_3.js"></script>
+        <script src="data/Indicedimpermabilit_4.js"></script>
+        <script src="data/Canopedelasuperficie_5.js"></script>
+        <script src="data/Indicedepriorisation4critres_6.js"></script>
+        <script src="data/Indicedepriorisation3critres_7.js"></script>
+        <script src="data/Limitesmunicipales_8.js"></script>
+        <script src="data/Quartiers_9.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[46.58836995045984,-71.64753246844697],[47.01639918126127,-70.7236294652232]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_OSMStandard_0');
+        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OSMStandard_0;
+        map.createPane('pane_GoogleSatellite_1');
+        map.getPane('pane_GoogleSatellite_1').style.zIndex = 401;
+        var layer_GoogleSatellite_1 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_1',
+            opacity: 0.9,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleSatellite_1;
+        map.addLayer(layer_GoogleSatellite_1);
+        function pop_Indicededfavorisation_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['IDIDU'] !== null ? autolinker.link(feature.properties['IDIDU'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ADIDU'] !== null ? autolinker.link(feature.properties['ADIDU'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Com3RSS'] !== null ? autolinker.link(feature.properties['Com3RSS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['c22_89_'] !== null ? autolinker.link(feature.properties['c22_89_'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['veg_1_p'] !== null ? autolinker.link(feature.properties['veg_1_p'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['imp_05p'] !== null ? autolinker.link(feature.properties['imp_05p'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prior3'] !== null ? autolinker.link(feature.properties['prior3'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prior4'] !== null ? autolinker.link(feature.properties['prior4'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['priorisati'] !== null ? autolinker.link(feature.properties['priorisati'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Canopee'] !== null ? autolinker.link(feature.properties['Canopee'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['imper'] !== null ? autolinker.link(feature.properties['imper'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['il_chaleur'] !== null ? autolinker.link(feature.properties['il_chaleur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['defav'] !== null ? autolinker.link(feature.properties['defav'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Indicededfavorisation_2_0(feature) {
+            switch(String(feature.properties['Com3RSS'])) {
+                case 'T1':
+                    return {
+                pane: 'pane_Indicededfavorisation_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,0.7)',
+                interactive: false,
+            }
+                    break;
+                case 'T2':
+                    return {
+                pane: 'pane_Indicededfavorisation_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(120,198,121,0.7)',
+                interactive: false,
+            }
+                    break;
+                case 'T3':
+                    return {
+                pane: 'pane_Indicededfavorisation_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(194,230,153,0.7)',
+                interactive: false,
+            }
+                    break;
+                case 'T4':
+                    return {
+                pane: 'pane_Indicededfavorisation_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,0.7)',
+                interactive: false,
+            }
+                    break;
+                case 'T5':
+                    return {
+                pane: 'pane_Indicededfavorisation_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,0.7)',
+                interactive: false,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Indicededfavorisation_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.7)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,255,0.5764705882352941)',
+                interactive: false,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Indicededfavorisation_2');
+        map.getPane('pane_Indicededfavorisation_2').style.zIndex = 402;
+        map.getPane('pane_Indicededfavorisation_2').style['mix-blend-mode'] = 'normal';
+        var layer_Indicededfavorisation_2 = new L.geoJson(json_Indicededfavorisation_2, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Indicededfavorisation_2',
+            layerName: 'layer_Indicededfavorisation_2',
+            pane: 'pane_Indicededfavorisation_2',
+            onEachFeature: pop_Indicededfavorisation_2,
+            style: style_Indicededfavorisation_2_0,
+        });
+        bounds_group.addLayer(layer_Indicededfavorisation_2);
+        function pop_lotsdechaleur_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['IDIDU'] !== null ? autolinker.link(feature.properties['IDIDU'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ADIDU'] !== null ? autolinker.link(feature.properties['ADIDU'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Com3RSS'] !== null ? autolinker.link(feature.properties['Com3RSS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['c22_89_'] !== null ? autolinker.link(feature.properties['c22_89_'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['veg_1_p'] !== null ? autolinker.link(feature.properties['veg_1_p'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['imp_05p'] !== null ? autolinker.link(feature.properties['imp_05p'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prior3'] !== null ? autolinker.link(feature.properties['prior3'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prior4'] !== null ? autolinker.link(feature.properties['prior4'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['priorisati'] !== null ? autolinker.link(feature.properties['priorisati'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Canopee'] !== null ? autolinker.link(feature.properties['Canopee'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['imper'] !== null ? autolinker.link(feature.properties['imper'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['il_chaleur'] !== null ? autolinker.link(feature.properties['il_chaleur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['defav'] !== null ? autolinker.link(feature.properties['defav'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_lotsdechaleur_3_0(feature) {
+            if (feature.properties['c22_89_'] >= 0.000000 && feature.properties['c22_89_'] <= 0.200000 ) {
+                return {
+                pane: 'pane_lotsdechaleur_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,245,240,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['c22_89_'] >= 0.200000 && feature.properties['c22_89_'] <= 0.400000 ) {
+                return {
+                pane: 'pane_lotsdechaleur_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(252,190,165,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['c22_89_'] >= 0.400000 && feature.properties['c22_89_'] <= 0.600000 ) {
+                return {
+                pane: 'pane_lotsdechaleur_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,112,80,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['c22_89_'] >= 0.600000 && feature.properties['c22_89_'] <= 0.800000 ) {
+                return {
+                pane: 'pane_lotsdechaleur_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(211,32,32,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['c22_89_'] >= 0.800000 && feature.properties['c22_89_'] <= 1.000000 ) {
+                return {
+                pane: 'pane_lotsdechaleur_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(103,0,13,0.7)',
+                interactive: false,
+            }
+            }
+        }
+        map.createPane('pane_lotsdechaleur_3');
+        map.getPane('pane_lotsdechaleur_3').style.zIndex = 403;
+        map.getPane('pane_lotsdechaleur_3').style['mix-blend-mode'] = 'normal';
+        var layer_lotsdechaleur_3 = new L.geoJson(json_lotsdechaleur_3, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_lotsdechaleur_3',
+            layerName: 'layer_lotsdechaleur_3',
+            pane: 'pane_lotsdechaleur_3',
+            onEachFeature: pop_lotsdechaleur_3,
+            style: style_lotsdechaleur_3_0,
+        });
+        bounds_group.addLayer(layer_lotsdechaleur_3);
+        function pop_Indicedimpermabilit_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['IDIDU'] !== null ? autolinker.link(feature.properties['IDIDU'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ADIDU'] !== null ? autolinker.link(feature.properties['ADIDU'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Com3RSS'] !== null ? autolinker.link(feature.properties['Com3RSS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['c22_89_'] !== null ? autolinker.link(feature.properties['c22_89_'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['veg_1_p'] !== null ? autolinker.link(feature.properties['veg_1_p'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['imp_05p'] !== null ? autolinker.link(feature.properties['imp_05p'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prior3'] !== null ? autolinker.link(feature.properties['prior3'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prior4'] !== null ? autolinker.link(feature.properties['prior4'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['priorisati'] !== null ? autolinker.link(feature.properties['priorisati'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Canopee'] !== null ? autolinker.link(feature.properties['Canopee'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['imper'] !== null ? autolinker.link(feature.properties['imper'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['il_chaleur'] !== null ? autolinker.link(feature.properties['il_chaleur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['defav'] !== null ? autolinker.link(feature.properties['defav'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Indicedimpermabilit_4_0(feature) {
+            if (feature.properties['imp_05p'] >= 0.000000 && feature.properties['imp_05p'] <= 0.200000 ) {
+                return {
+                pane: 'pane_Indicedimpermabilit_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(241,238,246,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['imp_05p'] >= 0.200000 && feature.properties['imp_05p'] <= 0.400000 ) {
+                return {
+                pane: 'pane_Indicedimpermabilit_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,181,216,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['imp_05p'] >= 0.400000 && feature.properties['imp_05p'] <= 0.600000 ) {
+                return {
+                pane: 'pane_Indicedimpermabilit_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(223,101,176,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['imp_05p'] >= 0.600000 && feature.properties['imp_05p'] <= 0.800000 ) {
+                return {
+                pane: 'pane_Indicedimpermabilit_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(221,28,119,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['imp_05p'] >= 0.800000 && feature.properties['imp_05p'] <= 1.000000 ) {
+                return {
+                pane: 'pane_Indicedimpermabilit_4',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(152,0,67,0.7)',
+                interactive: false,
+            }
+            }
+        }
+        map.createPane('pane_Indicedimpermabilit_4');
+        map.getPane('pane_Indicedimpermabilit_4').style.zIndex = 404;
+        map.getPane('pane_Indicedimpermabilit_4').style['mix-blend-mode'] = 'normal';
+        var layer_Indicedimpermabilit_4 = new L.geoJson(json_Indicedimpermabilit_4, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Indicedimpermabilit_4',
+            layerName: 'layer_Indicedimpermabilit_4',
+            pane: 'pane_Indicedimpermabilit_4',
+            onEachFeature: pop_Indicedimpermabilit_4,
+            style: style_Indicedimpermabilit_4_0,
+        });
+        bounds_group.addLayer(layer_Indicedimpermabilit_4);
+        function pop_Canopedelasuperficie_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['IDIDU'] !== null ? autolinker.link(feature.properties['IDIDU'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ADIDU'] !== null ? autolinker.link(feature.properties['ADIDU'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Com3RSS'] !== null ? autolinker.link(feature.properties['Com3RSS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['c22_89_'] !== null ? autolinker.link(feature.properties['c22_89_'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['veg_1_p'] !== null ? autolinker.link(feature.properties['veg_1_p'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['imp_05p'] !== null ? autolinker.link(feature.properties['imp_05p'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prior3'] !== null ? autolinker.link(feature.properties['prior3'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['prior4'] !== null ? autolinker.link(feature.properties['prior4'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['priorisati'] !== null ? autolinker.link(feature.properties['priorisati'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Canopee'] !== null ? autolinker.link(feature.properties['Canopee'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['imper'] !== null ? autolinker.link(feature.properties['imper'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['il_chaleur'] !== null ? autolinker.link(feature.properties['il_chaleur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['defav'] !== null ? autolinker.link(feature.properties['defav'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Canopedelasuperficie_5_0(feature) {
+            if (feature.properties['veg_1_p'] >= 0.000000 && feature.properties['veg_1_p'] <= 0.200000 ) {
+                return {
+                pane: 'pane_Canopedelasuperficie_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,255,204,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['veg_1_p'] >= 0.200000 && feature.properties['veg_1_p'] <= 0.400000 ) {
+                return {
+                pane: 'pane_Canopedelasuperficie_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(194,230,153,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['veg_1_p'] >= 0.400000 && feature.properties['veg_1_p'] <= 0.600000 ) {
+                return {
+                pane: 'pane_Canopedelasuperficie_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(120,198,121,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['veg_1_p'] >= 0.600000 && feature.properties['veg_1_p'] <= 0.800000 ) {
+                return {
+                pane: 'pane_Canopedelasuperficie_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(49,163,84,0.7)',
+                interactive: false,
+            }
+            }
+            if (feature.properties['veg_1_p'] >= 0.800000 && feature.properties['veg_1_p'] <= 1.000000 ) {
+                return {
+                pane: 'pane_Canopedelasuperficie_5',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,104,55,0.7)',
+                interactive: false,
+            }
+            }
+        }
+        map.createPane('pane_Canopedelasuperficie_5');
+        map.getPane('pane_Canopedelasuperficie_5').style.zIndex = 405;
+        map.getPane('pane_Canopedelasuperficie_5').style['mix-blend-mode'] = 'normal';
+        var layer_Canopedelasuperficie_5 = new L.geoJson(json_Canopedelasuperficie_5, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_Canopedelasuperficie_5',
+            layerName: 'layer_Canopedelasuperficie_5',
+            pane: 'pane_Canopedelasuperficie_5',
+            onEachFeature: pop_Canopedelasuperficie_5,
+            style: style_Canopedelasuperficie_5_0,
+        });
+        bounds_group.addLayer(layer_Canopedelasuperficie_5);
+        function pop_Indicedepriorisation4critres_6(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Indice de priorisation</th>\
+                        <td>' + (feature.properties['priorisati'] !== null ? autolinker.link(feature.properties['priorisati'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Canopée (% de la superficie)</th>\
+                        <td>' + (feature.properties['Canopee'] !== null ? autolinker.link(feature.properties['Canopee'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Indice d\'imperméabilité</th>\
+                        <td>' + (feature.properties['imper'] !== null ? autolinker.link(feature.properties['imper'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Îlots de chaleur</th>\
+                        <td>' + (feature.properties['il_chaleur'] !== null ? autolinker.link(feature.properties['il_chaleur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Indice de défavorisation</th>\
+                        <td>' + (feature.properties['defav'] !== null ? autolinker.link(feature.properties['defav'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+        function style_Indicedepriorisation4critres_6_0(feature) {
+            var context = {
+                feature: feature,
+                variables: {}
+            };
+            // Start of if blocks and style check logic
+            if (exp_Indicedepriorisation4critres_6rule0_eval_expression(context)) {
+                  return {
+                pane: 'pane_Indicedepriorisation4critres_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,0.7)',
+                interactive: true,
+            };
+                }
+                else if (exp_Indicedepriorisation4critres_6rule1_eval_expression(context)) {
+                  return {
+                pane: 'pane_Indicedepriorisation4critres_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(166,217,106,0.7)',
+                interactive: true,
+            };
+                }
+                else if (exp_Indicedepriorisation4critres_6rule2_eval_expression(context)) {
+                  return {
+                pane: 'pane_Indicedepriorisation4critres_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,230,76,0.7)',
+                interactive: true,
+            };
+                }
+                else if (exp_Indicedepriorisation4critres_6rule3_eval_expression(context)) {
+                  return {
+                pane: 'pane_Indicedepriorisation4critres_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,0.7)',
+                interactive: true,
+            };
+                }
+                else if (exp_Indicedepriorisation4critres_6rule4_eval_expression(context)) {
+                  return {
+                pane: 'pane_Indicedepriorisation4critres_6',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,0.7)',
+                interactive: true,
+            };
+                }
+            else {
+                return {fill: false, stroke: false};
+            }
+        }
+        map.createPane('pane_Indicedepriorisation4critres_6');
+        map.getPane('pane_Indicedepriorisation4critres_6').style.zIndex = 406;
+        map.getPane('pane_Indicedepriorisation4critres_6').style['mix-blend-mode'] = 'normal';
+        var layer_Indicedepriorisation4critres_6 = new L.geoJson(json_Indicedepriorisation4critres_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Indicedepriorisation4critres_6',
+            layerName: 'layer_Indicedepriorisation4critres_6',
+            pane: 'pane_Indicedepriorisation4critres_6',
+            onEachFeature: pop_Indicedepriorisation4critres_6,
+            style: style_Indicedepriorisation4critres_6_0,
+        });
+        bounds_group.addLayer(layer_Indicedepriorisation4critres_6);
+        map.addLayer(layer_Indicedepriorisation4critres_6);
+        function pop_Indicedepriorisation3critres_7(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Indice de priorisation</th>\
+                        <td>' + (feature.properties['priorisati'] !== null ? autolinker.link(feature.properties['priorisati'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Canopée (% de la superficie)</th>\
+                        <td>' + (feature.properties['Canopee'] !== null ? autolinker.link(feature.properties['Canopee'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Indice d\'imperméabilité</th>\
+                        <td>' + (feature.properties['imper'] !== null ? autolinker.link(feature.properties['imper'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Îlots de chaleur</th>\
+                        <td>' + (feature.properties['il_chaleur'] !== null ? autolinker.link(feature.properties['il_chaleur'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Indice de défavorisation</th>\
+                        <td>' + (feature.properties['defav'] !== null ? autolinker.link(feature.properties['defav'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+        function style_Indicedepriorisation3critres_7_0(feature) {
+            var context = {
+                feature: feature,
+                variables: {}
+            };
+            // Start of if blocks and style check logic
+            if (exp_Indicedepriorisation3critres_7rule0_eval_expression(context)) {
+                  return {
+                pane: 'pane_Indicedepriorisation3critres_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.7)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,150,65,0.7)',
+                interactive: true,
+            };
+                }
+                else if (exp_Indicedepriorisation3critres_7rule1_eval_expression(context)) {
+                  return {
+                pane: 'pane_Indicedepriorisation3critres_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.7)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(166,217,106,0.7)',
+                interactive: true,
+            };
+                }
+                else if (exp_Indicedepriorisation3critres_7rule2_eval_expression(context)) {
+                  return {
+                pane: 'pane_Indicedepriorisation3critres_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.7)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,230,76,0.7)',
+                interactive: true,
+            };
+                }
+                else if (exp_Indicedepriorisation3critres_7rule3_eval_expression(context)) {
+                  return {
+                pane: 'pane_Indicedepriorisation3critres_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.7)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,174,97,0.7)',
+                interactive: true,
+            };
+                }
+                else if (exp_Indicedepriorisation3critres_7rule4_eval_expression(context)) {
+                  return {
+                pane: 'pane_Indicedepriorisation3critres_7',
+                opacity: 1,
+                color: 'rgba(35,35,35,0.7)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,0.7)',
+                interactive: true,
+            };
+                }
+            else {
+                return {fill: false, stroke: false};
+            }
+        }
+        map.createPane('pane_Indicedepriorisation3critres_7');
+        map.getPane('pane_Indicedepriorisation3critres_7').style.zIndex = 407;
+        map.getPane('pane_Indicedepriorisation3critres_7').style['mix-blend-mode'] = 'normal';
+        var layer_Indicedepriorisation3critres_7 = new L.geoJson(json_Indicedepriorisation3critres_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Indicedepriorisation3critres_7',
+            layerName: 'layer_Indicedepriorisation3critres_7',
+            pane: 'pane_Indicedepriorisation3critres_7',
+            onEachFeature: pop_Indicedepriorisation3critres_7,
+            style: style_Indicedepriorisation3critres_7_0,
+        });
+        bounds_group.addLayer(layer_Indicedepriorisation3critres_7);
+        map.addLayer(layer_Indicedepriorisation3critres_7);
+        function pop_Limitesmunicipales_8(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Municipalité</th>\
+                        <td>' + (feature.properties['MUS_NM_MUN'] !== null ? autolinker.link(feature.properties['MUS_NM_MUN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">MRC</th>\
+                        <td>' + (feature.properties['MUS_NM_MRC'] !== null ? autolinker.link(feature.properties['MUS_NM_MRC'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Région</th>\
+                        <td>' + (feature.properties['MUS_NM_REG'] !== null ? autolinker.link(feature.properties['MUS_NM_REG'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Agglomération</th>\
+                        <td>' + (feature.properties['MUS_NM_AGG'] !== null ? autolinker.link(feature.properties['MUS_NM_AGG'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Communauté</th>\
+                        <td>' + (feature.properties['MUS_NM_COM'] !== null ? autolinker.link(feature.properties['MUS_NM_COM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Limitesmunicipales_8_0() {
+            return {
+                pane: 'pane_Limitesmunicipales_8',
+                opacity: 1,
+                color: 'rgba(0,0,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(231,113,72,0.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Limitesmunicipales_8');
+        map.getPane('pane_Limitesmunicipales_8').style.zIndex = 408;
+        map.getPane('pane_Limitesmunicipales_8').style['mix-blend-mode'] = 'normal';
+        var layer_Limitesmunicipales_8 = new L.geoJson(json_Limitesmunicipales_8, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Limitesmunicipales_8',
+            layerName: 'layer_Limitesmunicipales_8',
+            pane: 'pane_Limitesmunicipales_8',
+            onEachFeature: pop_Limitesmunicipales_8,
+            style: style_Limitesmunicipales_8_0,
+        });
+        bounds_group.addLayer(layer_Limitesmunicipales_8);
+        map.addLayer(layer_Limitesmunicipales_8);
+        function pop_Quartiers_9(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Quartier</th>\
+                        <td>' + (feature.properties['Quartier'] !== null ? autolinker.link(feature.properties['Quartier'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Ville</th>\
+                        <td>' + (feature.properties['Ville'] !== null ? autolinker.link(feature.properties['Ville'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_Quartiers_9_0() {
+            return {
+                pane: 'pane_Quartiers_9',
+                opacity: 1,
+                color: 'rgba(160,8,248,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(190,178,151,0.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Quartiers_9');
+        map.getPane('pane_Quartiers_9').style.zIndex = 409;
+        map.getPane('pane_Quartiers_9').style['mix-blend-mode'] = 'normal';
+        var layer_Quartiers_9 = new L.geoJson(json_Quartiers_9, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Quartiers_9',
+            layerName: 'layer_Quartiers_9',
+            pane: 'pane_Quartiers_9',
+            onEachFeature: pop_Quartiers_9,
+            style: style_Quartiers_9_0,
+        });
+        bounds_group.addLayer(layer_Quartiers_9);
+        map.addLayer(layer_Quartiers_9);
+        map.on("zoomend", function(e) {
+            if (map.getZoom() <= 19 && map.getZoom() >= 10) {
+                map.addLayer(layer_Quartiers_9);
+            } else if (map.getZoom() > 19 || map.getZoom() < 10) {
+                map.removeLayer(layer_Quartiers_9);
+            }
+        });
+            if (map.getZoom() <= 19 && map.getZoom() >= 10) {
+                map.addLayer(layer_Quartiers_9);
+            } else if (map.getZoom() > 19 || map.getZoom() < 10) {
+                map.removeLayer(layer_Quartiers_9);
+            }
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>Priorisation des sites de plantation pour le verdissement</h2>';
+            };
+            title.addTo(map);
+            var abstract = new L.Control({'position':'topleft'});
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div',
+                'leaflet-control abstract');
+                this._div.id = 'abstract'
+                    this._div.setAttribute("onmouseenter", "abstract.show()");
+                    this._div.setAttribute("onmouseleave", "abstract.hide()");
+                    this.hide();
+                    return this._div;
+                };
+                abstract.hide = function () {
+                    this._div.classList.remove("abstractUncollapsed");
+                    this._div.classList.add("abstract");
+                    this._div.innerHTML = 'i'
+                }
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = 'Le Collectif Canopée a mandaté le CERFO afin de développer un outil cartographique de priorisation des sites de plantation sur le territoire couvert par les milieux urbains et périurbains des régions de la Capitale-Nationale et de Chaudière-Appalaches. Une méthode d’analyse multicritère répondant spécifiquement aux besoins du projet a été développée. Le territoire d’étude couvre les centres de populations présents dans les 2 régions administratives, autour desquels une bande tampon de 500 m a été ajoutée. <br /><br />Quatre indices ont été retenus pour l’exercice : <br />	1. La présence d’îlots de chaleur; <br />	2. La présence de surfaces imperméables; <br />	3. La proportion couverte par la canopée;<br />	4. La défavorisation matérielle et sociale développé par Statistiques Canada (disponible pour une partie du territoire seulement). <br /><br />Le calcul des indices et l’analyse multicritère ont été réalisés à l’échelle des îlots de diffusion, correspondant à la plus petite limite géographique de recensement de Statistiques Canada. Ils sont présentés selon 5 classes de valeurs allant de la classe la plus basse (0-0,2) à la classe la plus élevée (0,8 à 1).<br /><br />La cartographie permet d\'identifier les zones  les plus critiques (indice de priorisation entre 0,8 et 1) qui nécessiteront les plus grands efforts de verdissement. ';
+            };
+            abstract.addTo(map);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/Quartiers_9.png" /> Quartiers': layer_Quartiers_9,'<img src="legend/Limitesmunicipales_8.png" /> Limites municipales': layer_Limitesmunicipales_8,'Indice de priorisation - 3 critères<br /><table><tr><td style="text-align: center;"><img src="legend/Indicedepriorisation3critres_7_0020.png" /></td><td>0 - 0,2</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedepriorisation3critres_7_02041.png" /></td><td>0,2 - 0,4</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedepriorisation3critres_7_04062.png" /></td><td>0,4 - 0,6</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedepriorisation3critres_7_06083.png" /></td><td>0,6 - 0,8</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedepriorisation3critres_7_0814.png" /></td><td>0,8 - 1</td></tr></table>': layer_Indicedepriorisation3critres_7,'Indice de priorisation - 4 critères<br /><table><tr><td style="text-align: center;"><img src="legend/Indicedepriorisation4critres_6_0020.png" /></td><td>0 - 0,2</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedepriorisation4critres_6_02041.png" /></td><td>0,2 - 0,4</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedepriorisation4critres_6_04062.png" /></td><td>0,4 - 0,6</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedepriorisation4critres_6_06083.png" /></td><td>0,6 - 0,8</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedepriorisation4critres_6_0814.png" /></td><td>0,8 - 1</td></tr></table>': layer_Indicedepriorisation4critres_6,'Canopée - % de la superficie<br /><table><tr><td style="text-align: center;"><img src="legend/Canopedelasuperficie_5_0020.png" /></td><td>0 - 0,2 %</td></tr><tr><td style="text-align: center;"><img src="legend/Canopedelasuperficie_5_02041.png" /></td><td>0,2 - 0,4 %</td></tr><tr><td style="text-align: center;"><img src="legend/Canopedelasuperficie_5_04062.png" /></td><td>0,4 - 0,6 %</td></tr><tr><td style="text-align: center;"><img src="legend/Canopedelasuperficie_5_06083.png" /></td><td>0,6 - 0,8 %</td></tr><tr><td style="text-align: center;"><img src="legend/Canopedelasuperficie_5_0814.png" /></td><td>0,8 - 1 %</td></tr></table>': layer_Canopedelasuperficie_5,'Indice d\'imperméabilité<br /><table><tr><td style="text-align: center;"><img src="legend/Indicedimpermabilit_4_0020.png" /></td><td>0 - 0,2</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedimpermabilit_4_02041.png" /></td><td>0,2 - 0,4</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedimpermabilit_4_04062.png" /></td><td>0,4 - 0,6</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedimpermabilit_4_06083.png" /></td><td>0,6 - 0,8</td></tr><tr><td style="text-align: center;"><img src="legend/Indicedimpermabilit_4_0814.png" /></td><td>0,8 - 1</td></tr></table>': layer_Indicedimpermabilit_4,'Îlots de chaleur<br /><table><tr><td style="text-align: center;"><img src="legend/lotsdechaleur_3_0020.png" /></td><td>0 - 0,2</td></tr><tr><td style="text-align: center;"><img src="legend/lotsdechaleur_3_02041.png" /></td><td>0,2 - 0,4</td></tr><tr><td style="text-align: center;"><img src="legend/lotsdechaleur_3_04062.png" /></td><td>0,4 - 0,6</td></tr><tr><td style="text-align: center;"><img src="legend/lotsdechaleur_3_06083.png" /></td><td>0,6 - 0,8</td></tr><tr><td style="text-align: center;"><img src="legend/lotsdechaleur_3_0814.png" /></td><td>0,8 - 1</td></tr></table>': layer_lotsdechaleur_3,'Indice de défavorisation<br /><table><tr><td style="text-align: center;"><img src="legend/Indicededfavorisation_2_T10.png" /></td><td>T1</td></tr><tr><td style="text-align: center;"><img src="legend/Indicededfavorisation_2_T21.png" /></td><td>T2</td></tr><tr><td style="text-align: center;"><img src="legend/Indicededfavorisation_2_T32.png" /></td><td>T3</td></tr><tr><td style="text-align: center;"><img src="legend/Indicededfavorisation_2_T43.png" /></td><td>T4</td></tr><tr><td style="text-align: center;"><img src="legend/Indicededfavorisation_2_T54.png" /></td><td>T5</td></tr><tr><td style="text-align: center;"><img src="legend/Indicededfavorisation_2_NoData5.png" /></td><td>No Data</td></tr></table>': layer_Indicededfavorisation_2,"Google Satellite": layer_GoogleSatellite_1,"OSM Standard": layer_OSMStandard_0,},{collapsed:false}).addTo(map);
+        setBounds();
+        resetLabels([layer_Limitesmunicipales_8,layer_Quartiers_9]);
+        map.on("zoomend", function(){
+            resetLabels([layer_Limitesmunicipales_8,layer_Quartiers_9]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_Limitesmunicipales_8,layer_Quartiers_9]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_Limitesmunicipales_8,layer_Quartiers_9]);
+        });
+        </script>
+        <div id="logo">
+            <img src="https://img1.wsimg.com/isteam/ip/3299d76a-1cc5-4768-a18a-d291f17750bf/logo%20rond%20avec%20texte%20-%20png.png" alt="some_text" style="position:fixed;bottom:0;left:0;width:193px;height:193px;z-index:2;">
+        </div>
+    </body>
+</html>
